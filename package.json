@@ -1,0 +1,14 @@
+{
+  "name": "branch_opening_hours_updater",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Adrian Lawrence",
+  "license": "ISC",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "fast-csv": "^2.4.0",
+    "mongodb": "^2.2.26"
+  }
+}
