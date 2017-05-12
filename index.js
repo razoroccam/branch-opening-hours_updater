@@ -31,6 +31,7 @@ csv
     };
 })
 .on('data', data => {
+    console.log('updating: ', data);
     update(data);
 })
 .on('end', () => {
