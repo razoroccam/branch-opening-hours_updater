@@ -1,22 +1,25 @@
 const fs = require('fs');
 const csv = require('fast-csv');
-const MongoClient = require('mongodb').MongoClient,
-      test = require('assert');
+const MongoClient = require('mongodb').MongoClient;
 
 const url = '';
 const stream = fs.createReadStream('hours.csv');
 
 const update = branch => {
   MongoClient.connect(url, (err, db) => {
+    if (!branch) {
+      db.close();
+      process.exit(1);
+    }
+
     const col = db.collection('branches');
 
-    col.findOneAndUpdate(
-      { branchName: Object.keys(branch)[0] },
-      { $set: { branchOpeningTimes: branch[Object.keys(branch)[0]] } },
-      { returnOriginal: false },
-      (err, r) => {
-        test.equal(null, err);
-        db.close();
+    col.findOne({ branchName: Object.keys(branch)[0] })
+      .then(doc => {
+        col.updateOne(
+          { _id: doc._id },
+          { $set: { branchOpeningTimes: branch[Object.keys(branch)[0]] } }
+        );
       });
   });
 }
@@ -33,7 +36,9 @@ csv
 .on('data', data => {
     console.log('updating: ', data);
     update(data);
+
 })
 .on('end', () => {
     console.log("done");
+    update(null);
 });
